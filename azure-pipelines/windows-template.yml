@@ -89,7 +89,7 @@ jobs:
       contents: "\
         ?(freerdp2|freerdp-client2|wfreerdp|winpr2|winpr-hash|winpr-makecert|winpr-tools2)\
         ?(.exe|.dll|.pdb|.lib|.exp|.manifest)"
-      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)/freerdp'
       flattenFolders: true
     displayName: Copy files to artifact staging directory
 
@@ -115,6 +115,17 @@ jobs:
       TargetFolder: '$(Build.ArtifactStagingDirectory)/openssl'
       flattenFolders: true
     displayName: Copy openssl libraries
+
+  - powershell: |
+      $r = Get-ChildItem -Path "$(Build.ArtifactStagingDirectory)" -Recurse | Get-FileHash -Algorithm SHA512
+
+      $r | Format-Table -AutoSize | Write-Output
+
+      $r | Select-Object -Property Hash, Path `
+        | Export-Csv -Path sha512sums.csv -NoTypeInformation
+
+      Move-Item sha512sums.csv "$(Build.ArtifactStagingDirectory)/"
+    displayName: Compute SHA512 hashes of outputs
 
   - task: PublishBuildArtifacts@1
     inputs:
