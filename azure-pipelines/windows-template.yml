@@ -75,6 +75,8 @@ jobs:
         -DCHANNEL_URBDRC=OFF ^
         -DMONOLITHIC_BUILD=ON ^
         -DWITH_JPEG=OFF
+
+      cmake --build build
     displayName: Build FreeRDP
 
   - script: |
