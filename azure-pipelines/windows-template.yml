@@ -93,6 +93,29 @@ jobs:
       flattenFolders: true
     displayName: Copy files to artifact staging directory
 
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: '$(Build.SourcesDirectory)/openssl/apps'
+      contents: |
+        openssl.exe
+        openssl.pdb
+        openssl.exp
+      TargetFolder: '$(Build.ArtifactStagingDirectory)/openssl'
+      flattenFolders: true
+    displayName: Copy openssl executable
+
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: '$(Build.SourcesDirectory)/openssl'
+      contents: |
+        *.dll
+        *.pdb
+        *.lib
+        *.exp
+      TargetFolder: '$(Build.ArtifactStagingDirectory)/openssl'
+      flattenFolders: true
+    displayName: Copy openssl libraries
+
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)'
