@@ -1,0 +1,98 @@
+parameters:
+- name: build_type
+  type: string
+  default: "Release"
+- name: arch
+  type: string
+  default: "64"
+- name: openssl_version_name
+  type: string
+  default: "1_1"
+- name: openssl_version
+  type: string
+  default: ">=1.1,<1.2"
+
+jobs:
+- job:
+  dependsOn: get_sources
+  variables:
+    buildname: "freerdp-python-ssl${{ parameters.openssl_version_name }}-\
+      win${{ parameters.arch }}-${{ parameters.build_type }}"
+    VCVARS: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars${{ parameters.arch }}.bat'
+
+  displayName: "Build freerdp \
+    with OpenSSL ${{ parameters.openssl_version_name }} \
+    for architecture ${{ parameters.arch }}, \
+    build type ${{ parameters.build_type }}"
+  pool:
+    vmImage: 'windows-2019'
+
+  steps:
+  - template: "get_sources.yml"
+
+  - task: ExtractFiles@1
+    inputs:
+      archiveFilePatterns: 'download-freerdp\freerdp.tar.gz'
+      destinationFolder: 'tmp-source'
+      cleanDestinationFolder: true
+    displayName: Extract freerdp
+
+  - powershell: |
+      Get-ChildItem -Path tmp-source\freerdp-* | Move-Item -Destination freerdp
+    displayName: Rename
+
+  - task: ExtractFiles@1
+    inputs:
+      archiveFilePatterns: 'download-openssl\openssl.tar.gz'
+      destinationFolder: 'tmp-source'
+      cleanDestinationFolder: true
+    displayName: Extract openssl
+
+  - powershell: |
+      Get-ChildItem -Path tmp-source\openssl-* | Move-Item -Destination openssl
+    displayName: Rename
+
+  - script: |
+      cd openssl
+      call "$(VCVARS)"
+      perl Configure VC-WIN64A-masm no-asm
+      nmake
+    displayName: Build OpenSSL
+
+  - script: |
+      dir /a-D /S /B openssl
+    displayName: List built OpenSSL files
+
+  - script: |
+      cd freerdp
+      call "$(VCVARS)"
+      set CC=cl.exe
+      set CXX=cl.exe
+
+      cmake -G "NMake Makefiles" -B build ^
+        -DOPENSSL_ROOT_DIR=$(Build.SourcesDirectory)\openssl ^
+        -DCMAKE_BUILD_TYPE=${{ parameters.build_type }} ^
+        -DCHANNEL_URBDRC=OFF ^
+        -DMONOLITHIC_BUILD=ON ^
+        -DWITH_JPEG=OFF
+    displayName: Build FreeRDP
+
+  - script: |
+      dir /a-D /S /B freerdp
+    displayName: List built files
+
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: '$(Build.SourcesDirectory)/freerdp/build'
+      contents: "\
+        ?(freerdp2|freerdp-client2|wfreerdp|winpr2|winpr-hash|winpr-makecert|winpr-tools2)\
+        ?(.exe|.dll|.pdb|.lib|.exp|.manifest)"
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+      flattenFolders: true
+    displayName: Copy files to artifact staging directory
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: "$(buildname)"
+    displayName: Publish build artifacts
