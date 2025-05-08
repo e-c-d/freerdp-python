@@ -18,14 +18,14 @@ jobs:
   variables:
     buildname: "freerdp-python-ssl${{ parameters.openssl_version_name }}-\
       win${{ parameters.arch }}-${{ parameters.build_type }}"
-    VCVARS: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars${{ parameters.arch }}.bat'
+    VCVARS: 'C:\Program Files (x86)\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars${{ parameters.arch }}.bat'
 
   displayName: "Build freerdp \
     with OpenSSL ${{ parameters.openssl_version_name }} \
     for architecture ${{ parameters.arch }}, \
     build type ${{ parameters.build_type }}"
   pool:
-    vmImage: 'windows-2019'
+    vmImage: 'windows-2022'
 
   steps:
   - template: "get_sources.yml"

@@ -3,11 +3,11 @@ steps:
     parameters:
       download_folder: "download-freerdp"
       download_filename: "freerdp.tar.gz"
-      url: "https://pub.freerdp.com/releases/freerdp-2.11.5.tar.gz"
-      sha512: "152DFEF2783283EF703EB28EBE4D32FB02519EE6DE9042B124AF34395A2A6DB36BD4CF1E96200BA3E93ACF06C245109413E3E36E6143ED4409BD90EDE6C383BD"
+      url: "https://pub.freerdp.com/releases/freerdp-3.15.0.tar.gz"
+      sha512: "E4C5CB8F7F6F7748BCE82CD38063FD94E1E4AA2A14F5EBD23B0095C42F2DAF5891B5C40D72EE01F3065656B4CA09A610FDED0330FB4DAA9F7987088ACE72D37C"
   - template: "get_source.yml"
     parameters:
       download_folder: "download-openssl"
       download_filename: "openssl.tar.gz"
-      url: "https://www.openssl.org/source/openssl-3.2.1.tar.gz"
-      sha512: "BAB2B2419319F1FEFFABA4692F03EDBF13B44D1090C6E075A2D69DAD67A2D51E64E6EDBF83456A26C83900A726D20D2C4EE4EAD9C94B322FD0B536F3B5A863C4"
+      url: "https://www.openssl.org/source/openssl-3.5.0.tar.gz"
+      sha512: "39CC80E2843A2EE30F3F5DE25CD9D0F759AD8DE71B0B39F5A679AFAAA74F4EB58D285AE50E29E4A27B139B49343AC91D1F05478F96FB0C6B150F16D7B634676F"
