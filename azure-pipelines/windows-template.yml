@@ -18,7 +18,7 @@ jobs:
   variables:
     buildname: "freerdp-python-ssl${{ parameters.openssl_version_name }}-\
       win${{ parameters.arch }}-${{ parameters.build_type }}"
-    VCVARS: 'C:\Program Files (x86)\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars${{ parameters.arch }}.bat'
+    VCVARS: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars${{ parameters.arch }}.bat'
 
   displayName: "Build freerdp \
     with OpenSSL ${{ parameters.openssl_version_name }} \
